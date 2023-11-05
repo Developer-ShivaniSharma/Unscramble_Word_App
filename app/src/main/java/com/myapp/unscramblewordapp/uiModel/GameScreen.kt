@@ -1,18 +1,132 @@
 package com.myapp.unscramblewordapp.uiModel
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.myapp.unscramblewordapp.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameStatus(score:Int,modifier: Modifier=Modifier){
+fun GameLayout(modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+    ) {
+        Column(
+            modifier = modifier.padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier
+                    .clip(shapes.medium)
+                    .background(colorScheme.surfaceTint)
+                    .padding(horizontal = 10.dp, vertical = 4.dp)
+                    .align(Alignment.End),
+                text = stringResource(R.string.word_count, 0),
+                style = MaterialTheme.typography.titleMedium,
+                color = colorScheme.onPrimary
+            )
+            Text(
+                text = "Scrambleum", style = MaterialTheme.typography.displayMedium
+            )
+            Text(
+                text = stringResource(R.string.instruction),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.displayMedium
+            )
+            OutlinedTextField(
+                value = "",
+                singleLine = true,
+                shapes = shapes.large,
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.textFieldColors(containerColor = colorScheme.surface),
+                onValueChange = {},
+                label = { Text(stringResource(R.string.enter_your_word)) },
+                isError = false,
+                keyboardOption = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                keyboardAction = KeyboardActions(onDone = {})
+            )
+        }
+    }
+}
+
+@Composable
+fun GameScreen(modifier: Modifier) {
+    Card {
+        Column {
+            Text(
+                text = stringResource(R.string.app_name),
+                style = MaterialTheme.typography.titleLarge
+            )
+            GameLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(16.dp),
+            )
+            Column(
+                modifier = modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {}
+                ) {
+                    Text(
+                        text = stringResource(R.string.submit),
+                        fontSize = 16.sp
+                    )
+
+                }
+                OutlinedButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {}
+                ) {
+                    Text(
+                        text = stringResource(R.string.skip),
+                        fontSize = 16.sp
+                    )
+                }
+            }
+        }
+        GameStatus(score = 0, modifier = Modifier.padding(20.dp))
+    }
+}
+
+@Composable
+fun GameStatus(score: Int, modifier: Modifier = Modifier) {
     Card {
         Text(
             text = stringResource(R.string.score, score),
@@ -23,8 +137,9 @@ fun GameStatus(score:Int,modifier: Modifier=Modifier){
     }
 }
 
+
 @Preview
 @Composable
-fun GameStatusPreview(){
-    GameStatus(0,)
+fun GameStatusPreview() {
+    GameLayout()
 }
