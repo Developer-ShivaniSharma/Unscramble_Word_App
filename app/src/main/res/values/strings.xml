@@ -6,5 +6,10 @@
     <string name="enter_your_word">Enter your word</string>
     <string name="skip">Skip</string>
     <string name="submit">Submit</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="you_scored">"You scored: %d"</string>
+    <string name="exit">Exit</string>
+    <string name="play_again">Play Again</string>
+
 
 </resources>

@@ -1,5 +1,6 @@
 package com.myapp.unscramblewordapp.uiModel
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -19,6 +21,7 @@ import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -135,6 +139,28 @@ fun GameStatus(score: Int, modifier: Modifier = Modifier) {
         )
 
     }
+}
+
+@Composable
+private fun FinalScoreDialog(score: Int, onPlayAgain: () -> Unit, modifier: Modifier = Modifier) {
+    val activity = (LocalContext.current as Activity)
+    AlertDialog(
+        onDismissRequest = {},
+        title = { Text(text = stringResource(R.string.congratulations)) },
+        text = { Text(text = stringResource(R.string.you_scored,score)) },
+        modifier = Modifier,
+        dismissButton = {
+            TextButton(onClick = { activity.finish() }) {
+                Text(text = stringResource(R.string.exit))
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onPlayAgain) {
+                Text(text = stringResource(R.string.play_again))
+            }
+        }
+    )
+
 }
 
 
