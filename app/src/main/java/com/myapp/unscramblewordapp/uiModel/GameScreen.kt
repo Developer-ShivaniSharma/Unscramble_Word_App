@@ -43,15 +43,24 @@ import com.myapp.unscramblewordapp.R
 
 
 @Composable
-fun GameScreen( modifier: Modifier = Modifier,gameViewModel: GameViewModel = viewModel()) {
+fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = viewModel()) {
     val gameUiState by gameViewModel.uiState.collectAsState()
     Card {
-        Column {
+        Column(
+            modifier = modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.titleLarge
             )
             GameLayout(
+                onUserGuessChanged={gameViewModel.updateUserGuess(it)},
+                userGuess = gameViewModel.userGuess,
+                onKeyboardDone={},
                 currentScrambledWord = gameUiState.currentScrambledWord,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -85,14 +94,21 @@ fun GameScreen( modifier: Modifier = Modifier,gameViewModel: GameViewModel = vie
                     )
                 }
             }
+            GameStatus(score = 0, modifier = Modifier.padding(20.dp))
         }
-        GameStatus(score = 0, modifier = Modifier.padding(20.dp))
+
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameLayout(currentScrambledWord: String, modifier: Modifier = Modifier) {
+fun GameLayout(
+    currentScrambledWord: String,
+    userGuess:String,
+    onUserGuessChanged: (String) -> Unit,
+    onKeyboardDone: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
@@ -112,25 +128,26 @@ fun GameLayout(currentScrambledWord: String, modifier: Modifier = Modifier) {
                 color = colorScheme.onPrimary
             )
             Text(
-                text = currentScrambledWord, style = MaterialTheme.typography.displayMedium
+                text = currentScrambledWord,
+                style = MaterialTheme.typography.displaySmall
             )
             Text(
                 text = stringResource(R.string.instruction),
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.bodyMedium
             )
 
             OutlinedTextField(
-                value = "",
+                value = userGuess,
                 singleLine = true,
                 shape = shapes.large,
                 modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.textFieldColors(containerColor = colorScheme.surface),
-                onValueChange = {},
+                onValueChange = onUserGuessChanged,
                 label = { Text(stringResource(R.string.enter_your_word)) },
                 isError = false,
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {})
+                keyboardActions = KeyboardActions(onDone = { onKeyboardDone() })
             )
         }
     }
