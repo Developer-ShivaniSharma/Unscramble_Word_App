@@ -24,6 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,55 +38,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.myapp.unscramblewordapp.R
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun GameLayout(modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-    ) {
-        Column(
-            modifier = modifier.padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                modifier = Modifier
-                    .clip(shapes.medium)
-                    .background(colorScheme.surfaceTint)
-                    .padding(horizontal = 10.dp, vertical = 4.dp)
-                    .align(Alignment.End),
-                text = stringResource(R.string.word_count, 0),
-                style = MaterialTheme.typography.titleMedium,
-                color = colorScheme.onPrimary
-            )
-            Text(
-                text = "Scrambleum", style = MaterialTheme.typography.displayMedium
-            )
-            Text(
-                text = stringResource(R.string.instruction),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.displayMedium
-            )
-            OutlinedTextField(
-                value = "",
-                singleLine = true,
-                shapes = shapes.large,
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.textFieldColors(containerColor = colorScheme.surface),
-                onValueChange = {},
-                label = { Text(stringResource(R.string.enter_your_word)) },
-                isError = false,
-                keyboardOption = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                keyboardAction = KeyboardActions(onDone = {})
-            )
-        }
-    }
-}
 
 @Composable
-fun GameScreen(modifier: Modifier) {
+fun GameScreen( modifier: Modifier = Modifier,gameViewModel: GameViewModel = viewModel()) {
+    val gameUiState by gameViewModel.uiState.collectAsState()
     Card {
         Column {
             Text(
@@ -92,6 +52,7 @@ fun GameScreen(modifier: Modifier) {
                 style = MaterialTheme.typography.titleLarge
             )
             GameLayout(
+                currentScrambledWord = gameUiState.currentScrambledWord,
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -129,6 +90,53 @@ fun GameScreen(modifier: Modifier) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GameLayout(currentScrambledWord: String, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+    ) {
+        Column(
+            modifier = modifier.padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier
+                    .clip(shapes.medium)
+                    .background(colorScheme.surfaceTint)
+                    .padding(horizontal = 10.dp, vertical = 4.dp)
+                    .align(Alignment.End),
+                text = stringResource(R.string.word_count, 0),
+                style = MaterialTheme.typography.titleMedium,
+                color = colorScheme.onPrimary
+            )
+            Text(
+                text = currentScrambledWord, style = MaterialTheme.typography.displayMedium
+            )
+            Text(
+                text = stringResource(R.string.instruction),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.displayMedium
+            )
+
+            OutlinedTextField(
+                value = "",
+                singleLine = true,
+                shape = shapes.large,
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.textFieldColors(containerColor = colorScheme.surface),
+                onValueChange = {},
+                label = { Text(stringResource(R.string.enter_your_word)) },
+                isError = false,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {})
+            )
+        }
+    }
+}
+
+
 @Composable
 fun GameStatus(score: Int, modifier: Modifier = Modifier) {
     Card {
@@ -147,7 +155,7 @@ private fun FinalScoreDialog(score: Int, onPlayAgain: () -> Unit, modifier: Modi
     AlertDialog(
         onDismissRequest = {},
         title = { Text(text = stringResource(R.string.congratulations)) },
-        text = { Text(text = stringResource(R.string.you_scored,score)) },
+        text = { Text(text = stringResource(R.string.you_scored, score)) },
         modifier = Modifier,
         dismissButton = {
             TextButton(onClick = { activity.finish() }) {
@@ -167,5 +175,5 @@ private fun FinalScoreDialog(score: Int, onPlayAgain: () -> Unit, modifier: Modi
 @Preview
 @Composable
 fun GameStatusPreview() {
-    GameLayout()
+    GameScreen()
 }
