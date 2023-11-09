@@ -2,5 +2,8 @@ package com.myapp.unscramblewordapp.uiModel
 
 data class GameUIState(
     val currentScrambledWord:String = "",
-    val isGuessedWordWrong:Boolean = false
+    val currentWordCount:Int = 1,
+    val isGuessedWordWrong:Boolean = false,
+    val score:Int = 0,
+    val isGameOver:Boolean = false
 )
