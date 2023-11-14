@@ -98,6 +98,12 @@ fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = vie
             }
             GameStatus(score = gameUiState.score, modifier = Modifier.padding(20.dp))
         }
+        if(gameUiState.isGameOver){
+            FinalScoreDialog(
+                score = gameUiState.score,
+                onPlayAgain = { gameViewModel.resetGame() }
+            )
+        }
 
     }
 }
