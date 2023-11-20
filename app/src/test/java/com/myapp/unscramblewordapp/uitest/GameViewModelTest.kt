@@ -1,5 +1,6 @@
 package com.myapp.unscramblewordapp.uitest
 
+import androidx.lifecycle.ViewModel
 import com.myapp.unscramblewordapp.data.MAX_Number
 import com.myapp.unscramblewordapp.data.SCORE_Increase
 import com.myapp.unscramblewordapp.data.getUnscrambledWord
@@ -59,6 +60,20 @@ class GameViewModelTest {
         assertEquals(MAX_Number,currentGameUIState.currentWordCount)
         assertTrue(currentGameUIState.isGameOver)
 
+    }
+    @Test
+    fun gameViewModel_WordSkipped_ScoreUnchangedAndWordCountIncreased(){
+        var currentGameUIState = viewModel.uiState.value
+        val correctPlayerWord = getUnscrambledWord(currentGameUIState.currentScrambledWord)
+        viewModel.updateUserGuess(correctPlayerWord)
+        viewModel.checkUserGuess()
+
+        currentGameUIState = viewModel.uiState.value
+        val lastWordCount = currentGameUIState.currentWordCount
+        viewModel.skipWord()
+        currentGameUIState = viewModel.uiState.value
+        assertEquals(SCORE_AFTER_FIRST_CORRECT_ANSWER,currentGameUIState.score)
+        assertEquals(lastWordCount+1,currentGameUIState.currentWordCount)
     }
 
 
